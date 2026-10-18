@@ -199,7 +199,7 @@ Do **not** delete the whole `plugins` directory; that would affect other plugins
 %LOCALAPPDATA%\Ballest\Saved\PluginManager\host.log
 ```
 
-Include the Map Roulette version, what you were doing, and any relevant error lines when [reporting an issue](../../issues). Avoid posting private information from unrelated log entries.
+Include the Map Roulette version, what you were doing, and any relevant error lines when [reporting an issue](https://github.com/YT-skyfall/ballest-map-roulette/issues). Avoid posting private information from unrelated log entries.
 
 ## Known limitations
 
@@ -214,6 +214,6 @@ Map Roulette is an independent community-made plugin for **Ballest of Them All**
 
 The included dramatic music is a newly synthesized arrangement inspired by *In the Hall of the Mountain King* by Edvard Grieg, rather than a commercial recording.
 
-Source code and internal development notes are available in this repository; technical work in progress is tracked in [`docs/DEVELOPMENT.md`](docs/DEVELOPMENT.md).
+Source code and development notes are available in this repository; technical work in progress is tracked in [`docs/DEVELOPMENT.md`](docs/DEVELOPMENT.md).
 
 **This is an unofficial community project, not an official Ballest feature.**
