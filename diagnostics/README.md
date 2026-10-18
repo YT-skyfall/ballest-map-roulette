@@ -8,7 +8,28 @@ Map Roulette v0.1.5 correctly accepts Ballistic Banzai (author time **27.581 sec
 
 Ballest's native Hub list view displays **27.581** without loading Ballistic Banzai. Plugin Manager currently retrieves Steam UGC metadata on workshop searches but does not expose it through the script API.
 
-## Experiment
+## First test: unmodified Plugin Manager and public Steam data
+
+The fastest safe test requires **no C++ patch, no extra game plugin, and no Steam API key**.
+
+1. Keep Map Roulette **v0.1.5** installed. If you haven't already, open **Ballistic Banzai** once so the plugin learns its **27.581-second** author time.
+2. In this branch, download [`Check-Steam-Author-Time.ps1`](Check-Steam-Author-Time.ps1) to a folder on your Windows PC.
+3. Open PowerShell in the same folder and run:
+
+   ```powershell
+   powershell -NoProfile -ExecutionPolicy Bypass -File .\Check-Steam-Author-Time.ps1
+   ```
+
+4. The script checks your local Plugin Manager `host.log` for a map whose observed author time was **27.581**, automatically extracts the public Workshop ID, and sends a **form-encoded POST request** to Steam's keyless `ISteamRemoteStorage/GetPublishedFileDetails/v1/` endpoint.
+5. **Share only the printed field names and the RESULT/Potential fields lines.** There is no need to share your full game log.
+
+If the log was reset since you played, reopen Ballistic Banzai and rerun, or give the published Workshop ID explicitly: `-WorkshopId "..." `.
+
+**Interpretation:** The keyless Steam endpoint has been documented to supply item details, but is **not guaranteed to supply developer metadata or author time**. If it does not return an author-time field, that rules out this specific endpoint, *not* other Steamworks/native Hub data sources. The diagnostic uses the **normal installed Plugin Manager** and does not change game files.
+
+## Experimental host patch — only if the first test fails
+
+## Experiment with a custom host (optional, not for normal users)
 
 1. In upstream Plugin Manager source (`AnythingGoes-ballest/ballest-plugin-manager`), **review** and, only in a test build, apply [`workshop-metadata-api.patch`](workshop-metadata-api.patch) to `src/host/api.cpp`. It adds one read-only AngelScript binding, `Workshop::Metadata(id)`.
 2. Build and test the custom host using the upstream project's documented developer process. **Do not replace the working host in a production Ballest install without a proper backup and review.**
