@@ -40,66 +40,18 @@ You can play the winning map immediately, roll again, or enable automatic loadin
 
 ## Installation
 
-Map Roulette is **not yet listed in Plugin Manager's public plugin browser**. For now, install it manually from this repository.
+> [!NOTE]
+> **Not yet available in the public plugin browser.** Map Roulette is still in development. The instructions below are how players will install it **once it has been reviewed and added to the [Ballest Plugin Manager](https://github.com/AnythingGoes-ballest/ballest-plugin-manager)**. For testing an unreleased version, see [Manual setup for private testing](docs/DEVELOPMENT.md#manual-setup-for-private-testing).
 
-### 1. Install Plugin Manager
+1. Install **[Ballest Plugin Manager](https://github.com/AnythingGoes-ballest/ballest-plugin-manager#install)** if you don't already have it.
+2. Launch **Ballest of Them All**.
+3. Click **plugins** in the footer of the main menu.
+4. Open the plugin browser and search for **Map Roulette**.
+5. Select **Map Roulette** and click **install**.
 
-If you haven't already installed it, follow the [official Plugin Manager installation guide](https://github.com/AnythingGoes-ballest/ballest-plugin-manager#install).
+Once installed, open **map roulette** from the main menu or footer, or press **F7** (some laptops use **Fn + F7**).
 
-Launch Ballest and confirm that a **plugins** button appears in the footer of the main menu.
-
-### 2. Open the plugins folder
-
-In-game, click **plugins**, then **open plugins folder**. This opens the correct location in Windows File Explorer.
-
-**Leave File Explorer open, then fully close Ballest before copying files.**
-
-If you prefer to find it yourself:
-
-1. In Steam, right-click **Ballest of Them All** → **Manage** → **Browse local files**.
-2. From the game installation directory, open `Ballest` → `Binaries` → `Win64` → `plugins`.
-
-The usual location looks like:
-
-```text
-...\Steam\steamapps\common\Ballest of Them All\Ballest\Binaries\Win64\plugins\
-```
-
-Your Steam library may be on a different drive.
-
-### 3. Download Map Roulette
-
-1. At the top of this GitHub repository, click the green **Code** button.
-2. Choose **Download ZIP**.
-3. Extract the downloaded ZIP.
-4. Rename the extracted folder `ballest-map-roulette-main` to **`map-roulette`**.
-5. Move that entire `map-roulette` folder into the `plugins` folder you opened in Step 2.
-
-After installation, the important files should look like this:
-
-```text
-plugins/
-└── map-roulette/
-    ├── info.toml
-    ├── main.as
-    ├── icon.png
-    ├── placeholder.png
-    └── sounds/
-        ├── music_00.wav ... music_15.wav
-        ├── reveal.wav
-        └── tick.wav
-```
-
-Extra files such as this README and the `docs` folder can remain there.
-
-> [!TIP]
-> **Check the folder nesting.** The files must be directly inside `plugins\map-roulette\`, not `plugins\map-roulette\ballest-map-roulette-main\`. If you already have an older `map-roulette` folder, replace its contents with this version's files while the game is closed.
-
-### 4. Launch the game
-
-Start Ballest again. Map Roulette should appear in the game's main menu and Plugin Manager.
-
-Open it from **map roulette** in the main menu or footer, or press **F7** (on some laptops, **Fn + F7**).
+**You won't need to download a ZIP, edit game folders, or install UE4SS.** Plugin Manager downloads and checks the files for you.
 
 ## How to use it
 
@@ -135,21 +87,23 @@ If you enable **Open the chosen map automatically**, the game starts loading the
 
 ## Updating
 
-1. Close Ballest.
-2. Download and extract the newest files from this repository.
-3. Replace your existing `plugins\map-roulette` folder with the new `map-roulette` folder.
-4. Restart Ballest.
+When a new version has been approved and added to Plugin Manager:
 
-Keep the folder name **`map-roulette`**. If a future update changes installation requirements, follow that version's release notes.
+1. In Ballest, open **plugins**.
+2. Find **Map Roulette** under your installed plugins.
+3. Click **update** if an update is available.
+
+Plugin Manager downloads and verifies the new files, replaces the old ones, and preserves your plugin settings. Updates will **not** appear just because a new commit is pushed to GitHub; they must first be added to the Plugin Manager registry.
 
 ## Uninstalling
 
-1. Close Ballest.
-2. Open the game's `plugins` folder, using the installation instructions above if needed.
-3. Delete **only** the `map-roulette` folder.
-4. Restart the game.
+1. In Ballest, open **plugins**.
+2. Find **Map Roulette** in the installed plugins list.
+3. Click **remove**.
 
-Do **not** delete the whole `plugins` directory; that would affect other plugins. Plugin Manager may retain some previously saved settings even after the folder is removed.
+To stop the plugin without uninstalling it, choose **turn off** instead. You don't need to delete any game files yourself.
+
+> **Private test builds:** If you installed the source manually before Map Roulette was listed in Plugin Manager, see [manual-test cleanup](docs/DEVELOPMENT.md#manual-setup-for-private-testing).
 
 ## Troubleshooting
 
@@ -157,9 +111,8 @@ Do **not** delete the whole `plugins` directory; that would affect other plugins
 <summary><strong>Map Roulette doesn't appear in the game</strong></summary>
 
 - Confirm that [Ballest Plugin Manager](https://github.com/AnythingGoes-ballest/ballest-plugin-manager#install) is installed and running.
-- Confirm that `info.toml` and `main.as` are directly in `plugins\map-roulette\`.
-- Check that the folder wasn't accidentally placed inside another `map-roulette` folder.
-- Close and restart Ballest; manually copied plugins are loaded when the game starts.
+- After public listing, search for **Map Roulette** in Plugin Manager's browser and install it from there.
+- If you installed a private test copy manually, follow the [test installation guide](docs/DEVELOPMENT.md#manual-setup-for-private-testing) to check its location, then restart Ballest.
 - Open **plugins → console** to check for loading or compilation errors.
 
 </details>
