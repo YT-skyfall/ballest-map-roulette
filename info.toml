@@ -1,6 +1,6 @@
 [meta]
 name = "Map Roulette"
-version = "0.1.5"
+version = "0.1.6"
 author = "Sky."
 description = "Random Hub map selector with filters and an animated thumbnail reel."
 min_host = "0.26.0"
