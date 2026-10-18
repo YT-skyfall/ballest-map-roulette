@@ -12,6 +12,7 @@ UI::FooterButton@ mainButton;
 UI::Window@ win;
 UI::Button@ closeButton;
 UI::Button@ findButton;
+UI::Button@ resetButton;
 UI::Button@ precheckButton;
 UI::Button@ cancelButton;
 UI::Button@ spinButton;
@@ -38,6 +39,7 @@ UI::Text@ reelStatus;
 UI::Text@ reelTitle;
 UI::Text@ pickedTitle;
 UI::Text@ pickedInfo;
+UI::Text@ pickedMeta;
 UI::Text@ autoPlayTimer;
 UI::Image@ winnerImage;
 float reelScale = 1.0f;
@@ -400,6 +402,26 @@ void CancelSearch()
     spinButton.visible = false;
     cancelButton.visible = false;
 }
+void ResetSearchFilters()
+{
+    // Filters only: keep the user's music, effects, and auto-play preferences.
+    // Resetting also clears any stale result pool, so the next spin must use a fresh search.
+    CancelSearch();
+    termBox.value = "";
+    tagsBox.value = "";
+    excludeBox.value = "";
+    minAuthorBox.value = "";
+    maxAuthorBox.value = "";
+    sortBox.selected = 0;
+    ratingBox.selected = 0;
+    playsBox.selected = 0;
+    unfinishedBox.checked = false;
+    filterAuthorTime = false;
+    precheckMessage = "";
+    statusText.text = "FILTERS RESET  /  Click FIND MAPS to search again.";
+    helpText.text = "Search Workshop maps, then spin for a random pick.";
+}
+
 void ShowPoolStatus()
 {
     cancelButton.visible = false;
@@ -413,9 +435,18 @@ void ShowPoolStatus()
             "No unknown map can win. CHECK RANDOM MAP opens it once; exit to main menu to continue.";
     }
     else if (ids.length() == 0)
-        statusText.text = "No maps match. Try changing the filters.";
+    {
+        statusText.text = "NO MATCHES  /  Try broader filters.";
+        helpText.text = "Adjust your search, rating or play-count requirements, then click FIND MAPS.";
+    }
     else
-        statusText.text = ids.length() + " eligible maps found (" + checked + " checked)";
+    {
+        statusText.text = ids.length() + (ids.length() == 1 ? " MAP READY" : " MAPS READY") +
+            " TO SPIN  /  " + checked + " CHECKED";
+        helpText.text = ids.length() == 1
+            ? "Only one map matches. A spin will select that map."
+            : "Each eligible map has an equal chance. Change filters and search again at any time.";
+    }
 }
 void FinishSearch()
 {
@@ -605,6 +636,7 @@ void StartSpin()
     reelStatus.text = "SPINNING ...";
     pickedTitle.text = "";
     pickedInfo.text = "";
+    pickedMeta.text = "";
     autoPlayTimer.text = "";
     win.ShowView(reelView);
     playButton.visible = false;
@@ -632,9 +664,14 @@ void SpinUpdate()
         // a similarly-sized carousel of candidates after the spin stops.
         pickedTitle.text = Title(ids[uint(winner)]);
         pickedInfo.text = filterAuthorTime
-            ? "CONFIRMED AUTHOR TIME " + Storage::Get("author-time:" + ids[uint(winner)], "?") +
-                "s  /  " + ids.length() + " VERIFIED MAPS"
-            : "1 RANDOM PICK  /  " + ids.length() + " MATCHING HUB MAPS";
+            ? "AUTHOR TIME " + Storage::Get("author-time:" + ids[uint(winner)], "?") + "s  /  " +
+                ids.length() + (ids.length() == 1 ? " VERIFIED MAP" : " VERIFIED MAPS")
+            : "SELECTED FROM " + ids.length() +
+                (ids.length() == 1 ? " MATCHING MAP" : " MATCHING MAPS");
+        int64 plays = Workshop::Plays(ids[uint(winner)]);
+        pickedMeta.text = plays > 0
+            ? formatInt(plays) + " PLAY SESSIONS  /  STEAM WORKSHOP"
+            : "STEAM WORKSHOP";
         winnerImage.path = Plugins::Folder() + "placeholder.png";
         nextWinnerPreviewCheck = 0;
         UpdateWinnerPreview();
@@ -707,24 +744,27 @@ void Main()
     DarkButton(closeButton);
 
     setupView = win.StartView();
-    Highlight(win.AddText("FILTER THE HUB", 22));
+    Highlight(win.AddText("BUILD YOUR MAP POOL", 22));
     win.NewRow();
-    Muted(win.AddText("Search all Steam Workshop pages before drawing a random map.", 16));
+    Muted(win.AddText("Choose your filters, find eligible Workshop maps, then spin.", 16));
     win.NewRow();
     win.AddText("Search", 17);
     win.AddSpace(0);
     @termBox = win.AddTextInput(520, "map title, description, or tag", 16);
     termBox.clearOnSubmit = false;
+    termBox.clearButton = true;
     win.NewRow();
     win.AddText("Include tags (all)", 17);
     win.AddSpace(0);
     @tagsBox = win.AddTextInput(520, "optional: beginner, flow", 16);
     tagsBox.clearOnSubmit = false;
+    tagsBox.clearButton = true;
     win.NewRow();
     win.AddText("Exclude tags", 17);
     win.AddSpace(0);
     @excludeBox = win.AddTextInput(520, "optional: troll", 16);
     excludeBox.clearOnSubmit = false;
+    excludeBox.clearButton = true;
     win.NewRow();
     win.AddText("Sort", 16);
     @sortBox = win.AddDropdown(145);
@@ -751,17 +791,19 @@ void Main()
     playsBox.AddOption("100+");
     playsBox.AddOption("1000+");
     win.NewRow();
-    win.AddText("Author time (known maps)", 16);
+    win.AddText("Author time (advanced)", 16);
     win.AddSpace(12);
     win.AddText("Min", 15);
     @minAuthorBox = win.AddTextInput(120, "none", 16);
     minAuthorBox.clearOnSubmit = false;
+    minAuthorBox.clearButton = true;
     win.AddSpace(15);
     win.AddText("Max", 15);
     @maxAuthorBox = win.AddTextInput(120, "e.g. 1:30", 16);
     maxAuthorBox.clearOnSubmit = false;
+    maxAuthorBox.clearButton = true;
     win.NewRow();
-    Muted(win.AddText("Unknown maps are excluded. Check one first without completing it; stale times are also excluded.", 14));
+    Muted(win.AddText("Optional: only previously checked maps qualify. Leave blank to include all maps.", 14));
     win.NewRow();
     @unfinishedBox = win.AddCheckBox("Only maps I haven't finished", 16);
     win.NewRow();
@@ -780,6 +822,8 @@ void Main()
     win.NewRow();
     @findButton = win.AddButton("FIND MAPS");
     BrightButton(findButton);
+    @resetButton = win.AddButton("RESET FILTERS");
+    DarkButton(resetButton);
     @cancelButton = win.AddButton("cancel search");
     DarkButton(cancelButton);
     cancelButton.visible = false;
@@ -790,7 +834,7 @@ void Main()
     BrightButton(spinButton);
     spinButton.visible = false;
     win.NewRow();
-    @statusText = win.AddText("Choose filters and click FIND MAPS.", 19);
+    @statusText = win.AddText("READY  /  Click FIND MAPS to begin.", 19);
     Highlight(statusText);
     win.NewRow();
     @helpText = win.AddText("Uses real Hub maps and previews; images may take time to load.", 15);
@@ -860,6 +904,11 @@ void Main()
     win.AddSpace(0);
     win.NewRow();
     win.AddSpace(0);
+    @pickedMeta = win.AddText("", 15);
+    Muted(pickedMeta);
+    win.AddSpace(0);
+    win.NewRow();
+    win.AddSpace(0);
     @playButton = win.AddButton("PLAY THIS MAP  >");
     BrightButton(playButton);
     @spinAgainButton = win.AddButton("SPIN AGAIN");
@@ -900,6 +949,7 @@ void Update(float dt)
     if (findButton.Clicked() || termBox.Submitted() || tagsBox.Submitted() || excludeBox.Submitted() ||
         minAuthorBox.Submitted() || maxAuthorBox.Submitted()) StartSearch();
     if (cancelButton.Clicked()) CancelSearch();
+    if (resetButton.Clicked()) ResetSearchFilters();
     SearchUpdate();
     if (precheckButton.Clicked()) StartPrecheck();
     if (spinButton.Clicked() || spinAgainButton.Clicked()) StartSpin();
@@ -932,10 +982,10 @@ void Update(float dt)
         {
             int secondsLeft = int(Math::ceil(6.0 - (Host::Time() - winnerTime)));
             if (secondsLeft < 0) secondsLeft = 0;
-            autoPlayTimer.text = "Opening automatically in " + secondsLeft + "s";
+            autoPlayTimer.text = "AUTO-OPEN IN " + secondsLeft + "s  /  Close to cancel";
             if (Host::Time() - winnerTime > 6.0) PlayWinner();
         }
-        else autoPlayTimer.text = "Manual play selected. The map will not start until you click Play.";
+        else autoPlayTimer.text = "MANUAL PLAY  /  Choose PLAY THIS MAP to begin.";
     }
     if (loading)
     {
