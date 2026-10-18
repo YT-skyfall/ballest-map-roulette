@@ -1,0 +1,9 @@
+[meta]
+name = "Workshop Metadata Probe"
+version = "0.0.1"
+author = "Sky."
+description = "Private read-only test of Workshop developer metadata; requires a patched Plugin Manager host."
+icon = "icon.png"
+
+[script]
+files = ["main.as"]
