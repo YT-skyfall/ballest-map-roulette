@@ -21,7 +21,9 @@ A roulette-style map picker for **Ballest of Them All**, created by **Sky.** Sea
 
 ## Install manually on Windows
 
-**The repository's full source and assets are being prepared. Do not attempt installation from this README until `main.as`, `icon.png`, `placeholder.png`, and the `sounds` folder are all present.**
+**Private test build:** The source, screenshots, and audio assets are included, but this version is still under development and has not been published as a public release.
+
+To get the files, on this repository's **Code** tab, tap the green **Code** button → **Download ZIP**, then extract the ZIP. You will find the plugin files inside the extracted `ballest-map-roulette-main` folder.
 
 1. Close Ballest completely.
 2. Open your **Steam Library**. Right-click **Ballest of Them All** → **Manage** → **Browse local files**.
