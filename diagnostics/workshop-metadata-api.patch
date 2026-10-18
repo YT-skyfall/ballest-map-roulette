@@ -9,7 +9,7 @@ diff --git a/src/host/api.cpp b/src/host/api.cpp
  std::string WorkshopTags(const std::string& id) { return ItemOf(id).tags; }
  int64_t WorkshopCreated(const std::string& id) { return ItemOf(id).created; }
  int64_t WorkshopUpdated(const std::string& id) { return ItemOf(id).updated; }
-@@ -1740,6 +1741,7 @@
+@@ -1741,6 +1742,7 @@
      Global("string Title(const string &in)", asFUNCTION(WorkshopTitle));
      Global("string Author(const string &in)", asFUNCTION(WorkshopAuthor));
      Global("string Description(const string &in)", asFUNCTION(WorkshopDescription));
