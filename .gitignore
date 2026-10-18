@@ -1,0 +1,10 @@
+# Local debugging / build files
+*.log
+*.tmp
+*.bak
+*.old
+Thumbs.db
+.DS_Store
+.vscode/
+.idea/
+__pycache__/
