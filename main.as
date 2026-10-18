@@ -112,13 +112,13 @@ void BrightButton(UI::Button@ b)
 {
     b.SetBackground(0.59f, 0.98f, 0.02f, 1);
     b.SetTextColor(0.005f, 0.008f, 0.01f, 1);
-    b.SetCornerRadius(3);
+    b.SetCornerRadius(6);
 }
 void DarkButton(UI::Button@ b)
 {
-    b.SetBackground(0.036f, 0.045f, 0.06f, 1);
+    b.SetBackground(0.058f, 0.068f, 0.082f, 1);
     b.SetTextColor(1, 1, 1, 1);
-    b.SetCornerRadius(3);
+    b.SetCornerRadius(6);
 }
 
 string Trim(const string &in v)
@@ -730,11 +730,11 @@ void Main()
     win.SetAnchor(0.5f, 0.5f);
     win.SetPivot(0.5f, 0.5f);
     win.SetOffset(0, 0);
-    win.SetPadding(24, 14);
-    win.SetRowGap(12);
-    win.SetCornerRadius(4);
+    win.SetPadding(26, 16);
+    win.SetRowGap(11);
+    win.SetCornerRadius(8);
     win.SetFont(FONT, "Regular");
-    win.SetBackground(0.005f, 0.008f, 0.012f, 0.98f);
+    win.SetBackground(0.009f, 0.013f, 0.019f, 0.985f);
     win.SetBlocksClicks(true);
     win.zOrder = 550;
     win.StartHeader();
