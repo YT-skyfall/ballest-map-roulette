@@ -154,12 +154,15 @@ To stop the plugin without uninstalling it, choose **turn off** instead. You don
 
 Include the Map Roulette version, what you were doing, and any relevant error lines when [reporting an issue](https://github.com/YT-skyfall/ballest-map-roulette/issues). Avoid posting private information from unrelated log entries.
 
-## Known limitations
+## Known issues and limitations
 
-- **Author-time filtering is experimental.** Workshop search results don't currently expose a verified author-medal time for every unplayed map through the plugin API. Strict limits may not behave as expected; leave the fields empty until a fix is verified.
-- **Large searches:** Queries exceeding approximately 10,000 Workshop results require narrower filters; the plugin does not intentionally choose from a partial result set.
-- **Preview loading:** Workshop map images can take time to appear.
-- **Audio stopping:** A short already-playing sound segment may finish after a spin is stopped or the window is closed.
+Known problems and improvement requests are tracked in the [GitHub Issues tab](https://github.com/YT-skyfall/ballest-map-roulette/issues). Please check the existing issues before reporting a new one.
+
+- **[Author-time filtering](https://github.com/YT-skyfall/ballest-map-roulette/issues/1) — confirmed issue.** Min/Max time filtering is not reliable for unplayed maps. Leave both fields blank for now.
+- **[Large searches](https://github.com/YT-skyfall/ballest-map-roulette/issues/2) — limitation.** More than approximately 10,000 results require a narrower Workshop search rather than a partial random selection.
+- **[Thumbnail loading](https://github.com/YT-skyfall/ballest-map-roulette/issues/3) — limitation.** Real map previews may show temporary placeholders while downloading.
+- **[Audio stopping](https://github.com/YT-skyfall/ballest-map-roulette/issues/4) — limitation.** An already-playing short sound segment may finish after the roulette stops.
+- **[Stepped reel animation](https://github.com/YT-skyfall/ballest-map-roulette/issues/5) — visual enhancement.** The five-thumbnail reel currently scrolls in steps instead of smoothly.
 
 ## About the project
 
