@@ -8,6 +8,22 @@ Map Roulette v0.1.5 correctly accepts Ballistic Banzai (author time **27.581 sec
 
 Ballest's native Hub list view displays **27.581** without loading Ballistic Banzai. Plugin Manager currently retrieves Steam UGC metadata on workshop searches but does not expose it through the script API.
 
+## Completed test: public Steam details (October 18, 2026)
+
+**Result: No author-time field exposed.** The Windows diagnostic returned the correct published Workshop item and title:
+
+- Steam Workshop published file ID: **3818396644**
+- Title: **Ballistic Banzai**
+- Independently verified author time in Ballest Hub: **27.581 seconds**
+- Steam endpoint tested: `ISteamRemoteStorage/GetPublishedFileDetails/v1/` (no API key)
+- Returned fields: `ban_reason`, `banned`, `consumer_app_id`, `creator`, `creator_app_id`, `description`, `favorited`, `file_size`, `file_url`, `filename`, `hcontent_file`, `hcontent_preview`, `lifetime_favorited`, `lifetime_subscriptions`, `preview_url`, `publishedfileid`, `result`, `subscriptions`, `tags`, `time_created`, `time_updated`, `title`, `views`, `visibility`.
+
+There was **no explicit `metadata`, `author_time`, medal, or goal-time field** in this response. We therefore **cannot** use this endpoint alone to drive the author-time filter. The output did not inspect every possible value in the description/tags; it specifically established that the API response has no author-time or developer-metadata field.
+
+**Next test:** Inspect the raw `ISteamUGC::GetQueryUGCMetadata` value the native Steam client returns, or the `WBP_HubListEntry` value displayed by Ballest. The currently installed host caches UGC metadata internally but cannot expose it to a normal AngelScript plugin. We can perform this investigation ourselves with a **temporary, backed-up local test host**; neither the public plugin nor the user’s working v0.1.5 baseline should require such a host.
+
+An official-host-compatible alternative remains necessary for public Plugin Manager distribution. Do not claim the field is accessible until tested.
+
 ## First test: unmodified Plugin Manager and public Steam data
 
 The fastest safe test requires **no C++ patch, no extra game plugin, and no Steam API key**.
