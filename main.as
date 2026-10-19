@@ -774,7 +774,7 @@ void Main()
     win.StartHeader();
     Highlight(win.AddText("MAP ROULETTE", 28));
     win.AddSpace(0);
-    UI::Text@ versionTag = win.AddText("BETA  /  v0.1.8", 13);
+    UI::Text@ versionTag = win.AddText("v0.1.8", 13);
     Muted(versionTag);
     @closeButton = win.AddButton("close  X");
     DarkButton(closeButton);
