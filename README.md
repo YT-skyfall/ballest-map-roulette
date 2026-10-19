@@ -1,175 +1,123 @@
 <div align="center">
-  <img src="icon.png" alt="Map Roulette icon" width="90">
+
+<img src="icon.png" alt="Map Roulette icon" width="96">
 
 # Ballest Map Roulette
 
-**Let the roulette decide which Hub map you play next.**
+**Not sure what to play next? Let the roulette choose.**
 
-A random map selector for **Ballest of Them All**, featuring real Workshop map previews, customizable filters, animated spins, and dramatic audio.
+A free, unofficial map picker for **Ballest of Them All**, powered by real Steam Workshop maps.
 
-**Version 0.1.5** · Windows / Steam · Requires Ballest Plugin Manager
+**Version 0.1.8** · Windows / Steam · Requires Ballest Plugin Manager
+
 </div>
 
 > [!IMPORTANT]
-> **Known issue: Author-time limits are not reliable in v0.1.5.** Leave the **Min** and **Max author time** boxes empty for normal use. The other roulette features can be used without this filter. See [Known limitations](#known-limitations).
+> **Not listed in Plugin Manager yet.** The project is being prepared for review. When the plugin is accepted into the in-game browser, you'll be able to install it there. The repository is private during this preparation stage; no public release or registry submission has been made.
 
-## What does it do?
+## What is Map Roulette?
 
-Map Roulette searches community-created maps from the game's **Hub (Steam Workshop)**, builds a pool of maps matching your filters, then randomly picks one with a five-thumbnail spinning reel.
+Map Roulette searches maps from Ballest's **Hub / Steam Workshop**, applies any filters you choose, then draws a random map. It shows real map thumbnails during the spin and lets you play the result, spin again, or return to your search. **Every eligible map has the same chance of winning**, regardless of its position in the Workshop search results.
 
-You can play the winning map immediately, roll again, or enable automatic loading after the reveal.
+### What you can do
 
-### Features
+- **Search the Workshop:** Search by map title, description, or tags, or leave the search empty for a broad pool.
+- **Fine-tune your pool:** On **MORE FILTERS**, adjust sort order, included/excluded tags, minimum rating, minimum play sessions, and whether you've already finished a map.
+- **Watch the roulette:** A five-thumbnail reel spins and gradually slows onto a randomly chosen map. With only one eligible map, the spin can only choose that map.
+- **Pick what happens next:** Click **PLAY THIS MAP**, **SPIN AGAIN**, or go back to filters.
+- **Customize the sound:** Turn music off, keep it quiet (default), or use normal volume. Spinning clicks and the reveal sound can be toggled.
+- **Play manually or automatically:** With auto-open on, the winner starts loading after a roughly **6-second** reveal countdown. Closing the roulette before loading starts cancels it.
+- **Open quickly:** Use the main menu, the footer, or **F7**.
 
-- **Random Hub map selection:** Pull from Workshop maps instead of choosing one yourself.
-- **Animated roulette:** See five real map thumbnails scroll and stop on a winner.
-- **Search and filters:** Search text, include/exclude tags, minimum rating, minimum play count, and maps you haven't finished.
-- **Sound:** Adjustable dramatic spin music, spinning clicks, and a winner reveal sound. Quiet music is the default.
-- **Flexible play:** Manually open the winner, spin again, or automatically load the winner after a short countdown.
-- **Quick access:** Open from the game's main menu, footer, or with **F7**.
+## What you need
 
-> **About author-time filters:** The controls appear in this build, but they cannot reliably filter all Workshop maps by their author-medal time yet. They are experimental, not a dependable way to pick shorter maps.
+- **Ballest of Them All** on **Windows through Steam**
+- **[Ballest Plugin Manager](https://github.com/AnythingGoes-ballest/ballest-plugin-manager#install)** (host **0.26.0 or newer**)
+- Steam online and working Workshop access for searches and downloads
 
-## Requirements
+Map Roulette is a **Plugin Manager plugin**, not a UE4SS mod. You **do not** need to install UE4SS or copy anything into a `Mods` directory.
 
-- **Ballest of Them All** installed through **Steam on Windows**
-- **[Ballest Plugin Manager](https://github.com/AnythingGoes-ballest/ballest-plugin-manager#install)** by AnythingGoes, version **0.26.0 or newer**
-- An internet connection and working Steam Workshop access to search and open community maps
+## How to install (once it is listed)
 
-**Map Roulette is a Plugin Manager plugin, not a UE4SS mod.** You do not need UE4SS for this plugin, and you should not put these files in a `Mods` folder.
+1. Install [Ballest Plugin Manager](https://github.com/AnythingGoes-ballest/ballest-plugin-manager#install), if you haven't already.
+2. Start Ballest and open **plugins** on the main menu.
+3. In Plugin Manager's browser, find **Map Roulette**.
+4. Select it and press **install**.
+5. Open **map roulette** from the main menu or footer, or press **F7** (some keyboards require **Fn + F7**).
 
-## Installation
+**You cannot find Map Roulette in the public browser yet.** These are the installation steps *after* approval. If you are an authorized tester with the private files, use [Private test installation](docs/DEVELOPMENT.md#private-test-installation) instead.
 
-> [!NOTE]
-> **Not yet available in the public plugin browser.** Map Roulette is still in development. The instructions below are how players will install it **once it has been reviewed and added to the [Ballest Plugin Manager](https://github.com/AnythingGoes-ballest/ballest-plugin-manager)**. For testing an unreleased version, see [Manual setup for private testing](docs/DEVELOPMENT.md#manual-setup-for-private-testing).
+## How to play
 
-1. Install **[Ballest Plugin Manager](https://github.com/AnythingGoes-ballest/ballest-plugin-manager#install)** if you don't already have it.
-2. Launch **Ballest of Them All**.
-3. Click **plugins** in the footer of the main menu.
-4. Open the plugin browser and search for **Map Roulette**.
-5. Select **Map Roulette** and click **install**.
+1. Open **Map Roulette** while on Ballest's main menu.
+2. Type a Workshop search if you like, or leave the search field blank. **MORE FILTERS** is optional.
+3. Click **FIND MAPS** and wait for the full search to finish. Large searches can take longer.
+4. Look at the number of eligible maps in **YOUR RESULTS**. If no maps qualify, adjust your filters and search again.
+5. Choose **SPIN THE ROULETTE**. The map shown at the center of the reel is the current candidate; the spin stops on the winner.
+6. On the winner screen, choose **PLAY THIS MAP**, **SPIN AGAIN**, or **FILTERS**. If auto-open is enabled, the map will open automatically after the countdown unless you close the UI.
 
-Once installed, open **map roulette** from the main menu or footer, or press **F7** (some laptops use **Fn + F7**).
+**MORE FILTERS:** Tag fields accept comma-separated names. Leave any field empty to avoid adding that restriction. Filtering options are applied when you click **FIND MAPS**, so run a fresh search after changing them. **RESET FILTERS** clears search/filter choices without changing sound or auto-open preferences.
 
-**You won't need to download a ZIP, edit game folders, or install UE4SS.** Plugin Manager downloads and checks the files for you.
+**STOP SPIN:** Ends the animation without selecting a winner. You can return to the search and spin again. **Close** or **Escape** dismisses the UI. You can open Map Roulette with **F7**.
 
-## How to use it
+## Filters explained
 
-1. Open **Map Roulette** while you're at the main menu.
-2. Choose your search terms and filters, or leave them at their defaults for a broader pool of maps.
-3. **Leave both author-time fields blank** in v0.1.5.
-4. Click **FIND MAPS** and wait for the Workshop search to finish.
-5. Click **SPIN ROULETTE**. The thumbnails will spin and stop on a randomly selected map.
-6. On the winner screen, choose:
-   - **PLAY THIS MAP** to open the selected map.
-   - **SPIN AGAIN** for another random choice from the matching pool.
-   - **< FILTERS** to adjust your search.
-
-If you enable **Open the chosen map automatically**, the game starts loading the winner about **6 seconds** after the reveal. You can close the roulette before then to cancel automatic loading.
-
-**STOP SPIN** stops the current animation without confirming a winner. To change your filters, return to the filter screen and click **FIND MAPS** again.
-
-### Filter reference
-
-| Setting | What it does |
+| Option | What it changes |
 | --- | --- |
-| **Search** | Finds maps using Workshop title, description, or tag text. |
-| **Include tags** | Only includes maps with the tags you enter, separated by commas. |
-| **Exclude tags** | Excludes maps with the tags you enter, separated by commas. |
-| **Sort** | Chooses the Workshop result order (top, trending, newest, updated, most played, liked, relevance). The roulette still picks randomly among the maps that pass your filters. |
-| **Min rating** | Restricts results to your chosen minimum rating (3, 4, or 5 stars). |
-| **Min plays** | Requires at least 10, 100, or 1,000 recorded plays. |
-| **Only maps I haven't finished** | Excludes maps where the game has a recorded personal completion time for you. |
-| **Min / Max author time** | **Experimental — not reliable in this version. Leave blank.** |
-| **Open the chosen map automatically** | Loads the selected map after its winner reveal countdown. |
-| **Spin music** | Choose Off, Quiet (default), or Normal. |
-| **Roulette clicks + reveal** | Turn the spinning clicks and winner sound on or off. |
+| Workshop search | Finds maps using Steam Workshop search. Blank = broad search. |
+| Sort | Controls Workshop result ordering, **not** which map is more likely to win. |
+| Minimum rating | Excludes maps below the selected Workshop star-rating threshold. |
+| Minimum plays | Excludes maps with fewer than the selected play sessions. |
+| Include tags (all) | Requires all listed tags. Separate with commas. |
+| Exclude tags | Excludes maps with listed tags. Separate with commas. |
+| Only maps I haven't finished | Excludes maps with a recorded personal completion time. |
+| Author time (experimental) | **Only works for maps whose true author time has previously been learned by loading them.** Leave blank for normal use. |
 
-## Updating
+> [!CAUTION]
+> **Author-time limitation:** Ballest's Hub can show author times for unplayed maps, but the current Plugin Manager API doesn't supply them to Map Roulette's Workshop search. With a Min or Max author-time limit, maps whose times aren't known are excluded, even when they would otherwise qualify. **Leave both author-time fields blank** for unrestricted searches. This work is postponed to a later version; see [issue #1](https://github.com/YT-skyfall/ballest-map-roulette/issues/1).
 
-When a new version has been approved and added to Plugin Manager:
+## Updating or removing it
 
-1. In Ballest, open **plugins**.
-2. Find **Map Roulette** under your installed plugins.
-3. Click **update** if an update is available.
+After Map Roulette is listed in Plugin Manager, open **plugins**, select Map Roulette, then use **update**, **turn off**, or **remove** as needed. Updates become available when a new version is reviewed and entered in Plugin Manager's registry—not merely when a GitHub commit appears.
 
-Plugin Manager downloads and verifies the new files, replaces the old ones, and preserves your plugin settings. Updates will **not** appear just because a new commit is pushed to GitHub; they must first be added to the Plugin Manager registry.
-
-## Uninstalling
-
-1. In Ballest, open **plugins**.
-2. Find **Map Roulette** in the installed plugins list.
-3. Click **remove**.
-
-To stop the plugin without uninstalling it, choose **turn off** instead. You don't need to delete any game files yourself.
-
-> **Private test builds:** If you installed the source manually before Map Roulette was listed in Plugin Manager, see [manual-test cleanup](docs/DEVELOPMENT.md#manual-setup-for-private-testing).
+Private testers who installed files manually can replace or remove only their `plugins/map-roulette/` test folder; see the [development guide](docs/DEVELOPMENT.md#private-test-installation). Don't delete Plugin Manager or other plugins.
 
 ## Troubleshooting
 
-<details>
-<summary><strong>Map Roulette doesn't appear in the game</strong></summary>
+**Can't find Map Roulette in the browser?** It has **not been listed yet**. After it is added, restart Ballest or reopen the plugin browser if necessary.
 
-- Confirm that [Ballest Plugin Manager](https://github.com/AnythingGoes-ballest/ballest-plugin-manager#install) is installed and running.
-- After public listing, search for **Map Roulette** in Plugin Manager's browser and install it from there.
-- If you installed a private test copy manually, follow the [test installation guide](docs/DEVELOPMENT.md#manual-setup-for-private-testing) to check its location, then restart Ballest.
-- Open **plugins → console** to check for loading or compilation errors.
+**Nothing happens when opening it?** Confirm Plugin Manager is running and the plugin isn't turned off. For a manual test install, double-check the folder layout and open **plugins → console** for AngelScript errors.
 
-</details>
+**Search returns no maps?** Check Steam connectivity, clear the search and advanced filters, and search again. Author-time Min/Max fields should normally be empty.
 
-<details>
-<summary><strong>Search finds no maps or takes a long time</strong></summary>
+**A search finds over 10,000 maps?** Narrow it with search terms or tags. The mod doesn't choose winners from an incomplete subset of a much larger search.
 
-- Check that Steam is online and Workshop is accessible.
-- Try removing search terms, tags, rating limits, and minimum play counts.
-- Leave author-time fields blank.
-- If the search reports **more than 10,000 maps**, narrow the query with a title or tags. The plugin won't spin from a partially searched result set.
-- Broad searches can take longer because the plugin requests multiple pages of Workshop results.
+**Images are blank or show placeholders?** Steam may still be fetching previews; give them a moment to load. If a map fails to open, check Steam and try another result.
 
-</details>
+**Audio continues briefly after stopping?** The current Plugin Manager audio API cannot instantly stop a sound segment that has already begun. A short tail is a known limitation.
 
-<details>
-<summary><strong>Thumbnails are blank or maps won't load</strong></summary>
-
-- Give Steam time to load/download image previews. A placeholder can appear while an image is pending.
-- Ensure Steam is connected before attempting to open a Workshop map.
-- If a map fails to load, return to the roulette and try again or select another map.
-
-</details>
-
-<details>
-<summary><strong>I can't hear the roulette music</strong></summary>
-
-- Set **Spin music** to **Quiet** or **Normal**, not Off.
-- Make sure the `sounds` folder contains `music_00.wav` through `music_15.wav`, plus `tick.wav` and `reveal.wav`.
-- Check the game's audio volume. Closing a spin can leave a very short audio tail, because individual sounds cannot be instantly stopped by the current Plugin Manager audio API.
-
-</details>
-
-**Still having an issue?** Open **plugins → console** in-game. The log is also stored at:
+**Unexpected issue?** In Ballest, open **plugins → console** or check:
 
 ```text
 %LOCALAPPDATA%\Ballest\Saved\PluginManager\host.log
 ```
 
-Include the Map Roulette version, what you were doing, and any relevant error lines when [reporting an issue](https://github.com/YT-skyfall/ballest-map-roulette/issues). Avoid posting private information from unrelated log entries.
+Include the plugin version, a brief description of the problem, and relevant error lines in a [GitHub issue](https://github.com/YT-skyfall/ballest-map-roulette/issues). Don't upload unrelated private information from your logs.
 
-## Known issues and limitations
+### Known limitations and tracked improvements
 
-Known problems and improvement requests are tracked in the [GitHub Issues tab](https://github.com/YT-skyfall/ballest-map-roulette/issues). Please check the existing issues before reporting a new one.
+- [#1 Author-time prefiltering for unplayed maps](https://github.com/YT-skyfall/ballest-map-roulette/issues/1) — deferred until a later update.
+- [#2 Searches above 10,000 results](https://github.com/YT-skyfall/ballest-map-roulette/issues/2) — intentionally require narrower filters.
+- [#3 Workshop thumbnails may load asynchronously](https://github.com/YT-skyfall/ballest-map-roulette/issues/3).
+- [#4 Very short sound tail after stopping](https://github.com/YT-skyfall/ballest-map-roulette/issues/4).
+- [#5 Reel advances in steps, not a continuous slide](https://github.com/YT-skyfall/ballest-map-roulette/issues/5).
 
-- **[Author-time filtering](https://github.com/YT-skyfall/ballest-map-roulette/issues/1) — confirmed issue.** Min/Max time filtering is not reliable for unplayed maps. Leave both fields blank for now.
-- **[Large searches](https://github.com/YT-skyfall/ballest-map-roulette/issues/2) — limitation.** More than approximately 10,000 results require a narrower Workshop search rather than a partial random selection.
-- **[Thumbnail loading](https://github.com/YT-skyfall/ballest-map-roulette/issues/3) — limitation.** Real map previews may show temporary placeholders while downloading.
-- **[Audio stopping](https://github.com/YT-skyfall/ballest-map-roulette/issues/4) — limitation.** An already-playing short sound segment may finish after the roulette stops.
-- **[Stepped reel animation](https://github.com/YT-skyfall/ballest-map-roulette/issues/5) — visual enhancement.** The five-thumbnail reel currently scrolls in steps instead of smoothly.
+## About
 
-## About the project
+Created by **Sky.** Map Roulette is an independent, unofficial community plugin. It uses Ballest Plugin Manager's supported AngelScript API; it doesn't require a modified host, a Steam API key, or an external account.
 
-Map Roulette is an independent community-made plugin for **Ballest of Them All**, created by **Sky.** It runs through the [AnythingGoes Ballest Plugin Manager](https://github.com/AnythingGoes-ballest/ballest-plugin-manager).
+The spin music is a newly synthesized arrangement inspired by Edvard Grieg's public-domain work *In the Hall of the Mountain King*. No third-party commercial recording is included.
 
-The included dramatic music is a newly synthesized arrangement inspired by *In the Hall of the Mountain King* by Edvard Grieg, rather than a commercial recording.
+For changes across versions see [CHANGELOG.md](CHANGELOG.md). The [license](LICENSE) covers the repository's original project material. See [release preparation](docs/RELEASE.md) for the private review process.
 
-Source code and development notes are available in this repository; technical work in progress is tracked in [`docs/DEVELOPMENT.md`](docs/DEVELOPMENT.md).
-
-**This is an unofficial community project, not an official Ballest feature.**
+**Not affiliated with, endorsed by, or an official feature of Ballest of Them All or AnythingGoes.**
