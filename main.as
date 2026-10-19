@@ -12,6 +12,9 @@ UI::FooterButton@ mainButton;
 UI::Window@ win;
 UI::Button@ closeButton;
 UI::Button@ findButton;
+UI::Button@ resetButton;
+UI::Button@ advancedButton;
+UI::Button@ doneAdvancedButton;
 UI::Button@ precheckButton;
 UI::Button@ cancelButton;
 UI::Button@ spinButton;
@@ -35,6 +38,9 @@ UI::CheckBox@ soundsBox;
 UI::Text@ statusText;
 UI::Text@ helpText;
 UI::Text@ reelStatus;
+UI::Text@ reelPoolText;
+UI::Text@ reelProgressText;
+UI::Text@ filterSummary;
 UI::Text@ reelTitle;
 UI::Text@ pickedTitle;
 UI::Text@ pickedInfo;
@@ -46,6 +52,8 @@ float winnerPreviewHeight = 338.0f;
 double nextWinnerPreviewCheck = 0;
 array<UI::Image@> thumbs;
 int setupView = 0;
+int advancedView = 0;
+string advancedSnapshot = "";
 int reelView = 0;
 int winnerView = 0;
 
@@ -110,13 +118,13 @@ void BrightButton(UI::Button@ b)
 {
     b.SetBackground(0.59f, 0.98f, 0.02f, 1);
     b.SetTextColor(0.005f, 0.008f, 0.01f, 1);
-    b.SetCornerRadius(3);
+    b.SetCornerRadius(6);
 }
 void DarkButton(UI::Button@ b)
 {
-    b.SetBackground(0.036f, 0.045f, 0.06f, 1);
+    b.SetBackground(0.058f, 0.068f, 0.082f, 1);
     b.SetTextColor(1, 1, 1, 1);
-    b.SetCornerRadius(3);
+    b.SetCornerRadius(6);
 }
 
 string Trim(const string &in v)
@@ -368,6 +376,7 @@ void StartSearch()
         return;
     }
     filterAuthorTime = Trim(minAuthorBox.text) != "" || Trim(maxAuthorBox.text) != "";
+    UpdateFilterSummary();
     if ((Trim(minAuthorBox.text) != "" && minAuthorTime <= 0) ||
         (Trim(maxAuthorBox.text) != "" && maxAuthorTime <= 0))
     {
@@ -400,6 +409,47 @@ void CancelSearch()
     spinButton.visible = false;
     cancelButton.visible = false;
 }
+void ResetSearchFilters()
+{
+    // Filters only: keep the user's music, effects, and auto-play preferences.
+    // Resetting also clears any stale result pool, so the next spin must use a fresh search.
+    CancelSearch();
+    termBox.value = "";
+    tagsBox.value = "";
+    excludeBox.value = "";
+    minAuthorBox.value = "";
+    maxAuthorBox.value = "";
+    sortBox.selected = 0;
+    ratingBox.selected = 0;
+    playsBox.selected = 0;
+    unfinishedBox.checked = false;
+    filterAuthorTime = false;
+    precheckMessage = "";
+    UpdateFilterSummary();
+    statusText.text = "FILTERS RESET  /  Click FIND MAPS to search again.";
+    helpText.text = "Search Workshop maps, then spin for a random pick.";
+}
+
+string FilterSignature()
+{
+    // Snapshot only the filters that affect which maps qualify.
+    return tagsBox.text + "|" + excludeBox.text + "|" +
+        formatInt(sortBox.selected) + "|" + formatInt(ratingBox.selected) + "|" +
+        formatInt(playsBox.selected) + "|" + formatInt(unfinishedBox.checked ? 1 : 0) + "|" +
+        minAuthorBox.text + "|" + maxAuthorBox.text;
+}
+
+void UpdateFilterSummary()
+{
+    bool tagsUsed = Trim(tagsBox.text) != "" || Trim(excludeBox.text) != "";
+    bool timeUsed = Trim(minAuthorBox.text) != "" || Trim(maxAuthorBox.text) != "";
+    bool optionsUsed = tagsUsed || timeUsed || sortBox.selected != 0 ||
+        ratingBox.selected != 0 || playsBox.selected != 0 || unfinishedBox.checked;
+    filterSummary.text = optionsUsed
+        ? "CUSTOM FILTERS ACTIVE   /   MORE FILTERS to edit them"
+        : "NO EXTRA FILTERS   /   All public Workshop maps are included";
+}
+
 void ShowPoolStatus()
 {
     cancelButton.visible = false;
@@ -413,9 +463,18 @@ void ShowPoolStatus()
             "No unknown map can win. CHECK RANDOM MAP opens it once; exit to main menu to continue.";
     }
     else if (ids.length() == 0)
-        statusText.text = "No maps match. Try changing the filters.";
+    {
+        statusText.text = "NO MATCHES  /  Try broader filters.";
+        helpText.text = "Adjust your search, rating or play-count requirements, then click FIND MAPS.";
+    }
     else
-        statusText.text = ids.length() + " eligible maps found (" + checked + " checked)";
+    {
+        statusText.text = ids.length() + (ids.length() == 1 ? " MAP READY" : " MAPS READY") +
+            " TO SPIN  /  " + checked + " CHECKED";
+        helpText.text = ids.length() == 1
+            ? "Only one map matches. A spin will select that map."
+            : "Each eligible map has an equal chance. Change filters and search again at any time.";
+    }
 }
 void FinishSearch()
 {
@@ -602,7 +661,9 @@ void StartSpin()
     StartSpinAudio();
     winnerReady = false;
     failedLoading = false;
-    reelStatus.text = "SPINNING ...";
+    reelStatus.text = "ROLLING   0%";
+    reelPoolText.text = ids.length() + (ids.length() == 1 ? " MAP IN THE DRAW" : " MAPS IN THE DRAW");
+    reelProgressText.text = "SHUFFLING";
     pickedTitle.text = "";
     pickedInfo.text = "";
     autoPlayTimer.text = "";
@@ -610,6 +671,9 @@ void StartSpin()
     playButton.visible = false;
     spinAgainButton.visible = false;
     stopButton.visible = true;
+    // A one-map pool is a single preview, not five misleading identical cards.
+    for (int i = 0; i < SLOTS; i++)
+        thumbs[uint(i)].visible = ids.length() > 1 || i == SLOTS / 2;
     UpdateThumbs();
 }
 void SpinUpdate()
@@ -631,10 +695,12 @@ void SpinUpdate()
         // Hold on an unmistakable full-size winner reveal rather than showing
         // a similarly-sized carousel of candidates after the spin stops.
         pickedTitle.text = Title(ids[uint(winner)]);
+        // One concise line under the selected map: no redundant Workshop/play-count badges.
         pickedInfo.text = filterAuthorTime
-            ? "CONFIRMED AUTHOR TIME " + Storage::Get("author-time:" + ids[uint(winner)], "?") +
-                "s  /  " + ids.length() + " VERIFIED MAPS"
-            : "1 RANDOM PICK  /  " + ids.length() + " MATCHING HUB MAPS";
+            ? "AUTHOR TIME " + Storage::Get("author-time:" + ids[uint(winner)], "?") + "s  /  " +
+                ids.length() + (ids.length() == 1 ? " ELIGIBLE MAP" : " ELIGIBLE MAPS")
+            : "SELECTED FROM " + ids.length() +
+                (ids.length() == 1 ? " MATCHING MAP" : " MATCHING MAPS");
         winnerImage.path = Plugins::Folder() + "placeholder.png";
         nextWinnerPreviewCheck = 0;
         UpdateWinnerPreview();
@@ -649,6 +715,7 @@ void SpinUpdate()
     double t = double(tick) / double(ticks);
     nextBeat = Host::Time() + 0.045 + 0.42 * t * t * t;
     reelStatus.text = "ROLLING  " + tick * 100 / ticks + "%";
+    reelProgressText.text = t > 0.82 ? "ALMOST THERE" : t > 0.56 ? "SLOWING DOWN" : "SHUFFLING";
 }
 void PlayWinner()
 {
@@ -676,58 +743,128 @@ void Main()
     @footerButton = UI::AddFooterButton("map roulette");
     @mainButton = UI::AddMenuButton("map roulette");
     @win = UI::CreateWindow();
-    win.SetScreenSize(0.92f, 0.86f);
-    // Scale the five images down on smaller screens so they remain centred
-    // within the full-screen-like menu, rather than running off the right.
+    win.SetScreenSize(0.86f, 0.82f);
+    // Size previews relative to the playable viewport, but avoid overflowing on small displays.
     float screenWidth = 1680.0f, screenHeight = 900.0f;
     if (UI::ScreenSize(screenWidth, screenHeight))
     {
-        reelScale = (screenWidth * 0.92f - 96.0f) / 1210.0f;
+        reelScale = (screenWidth * 0.86f - 130.0f) / 1150.0f;
         if (reelScale > 1.0f) reelScale = 1.0f;
-        if (reelScale < 0.50f) reelScale = 0.50f;
-        winnerPreviewWidth = screenWidth * 0.44f;
-        if (winnerPreviewWidth > 560.0f) winnerPreviewWidth = 560.0f;
-        if (winnerPreviewWidth < 300.0f) winnerPreviewWidth = 300.0f;
+        if (reelScale < 0.49f) reelScale = 0.49f;
+        winnerPreviewWidth = screenWidth * 0.41f;
+        if (winnerPreviewWidth > 645.0f) winnerPreviewWidth = 645.0f;
+        if (winnerPreviewWidth < 290.0f) winnerPreviewWidth = 290.0f;
         winnerPreviewHeight = winnerPreviewWidth * 304.0f / 504.0f;
     }
     win.SetAnchor(0.5f, 0.5f);
     win.SetPivot(0.5f, 0.5f);
     win.SetOffset(0, 0);
-    win.SetPadding(24, 14);
+    win.SetPadding(30, 18);
     win.SetRowGap(12);
-    win.SetCornerRadius(4);
+    win.SetCornerRadius(10);
     win.SetFont(FONT, "Regular");
-    win.SetBackground(0.005f, 0.008f, 0.012f, 0.98f);
+    win.SetBackground(0.009f, 0.013f, 0.021f, 0.985f);
+    win.SetCardBackground(0.018f, 0.030f, 0.042f, 0.97f);
     win.SetBlocksClicks(true);
     win.zOrder = 550;
+
+    // Navigation is deliberately the only element shared by all three stages.
     win.StartHeader();
-    Highlight(win.AddText("MAP ROULETTE", 30));
+    Highlight(win.AddText("MAP ROULETTE", 28));
     win.AddSpace(0);
+    UI::Text@ versionTag = win.AddText("BETA  /  v0.1.8", 13);
+    Muted(versionTag);
     @closeButton = win.AddButton("close  X");
     DarkButton(closeButton);
 
+    // STEP 1: only the most-used search and playback controls. Detailed filters
+    // have their own screen so this page never turns into a full-width form.
     setupView = win.StartView();
-    Highlight(win.AddText("FILTER THE HUB", 22));
+    win.SetScrolling(setupView, true);
+    Muted(win.AddText("01  /  BUILD YOUR POOL", 15));
     win.NewRow();
-    Muted(win.AddText("Search all Steam Workshop pages before drawing a random map.", 16));
+    win.AddText("Find something worth playing.", 29);
     win.NewRow();
-    win.AddText("Search", 17);
-    win.AddSpace(0);
-    @termBox = win.AddTextInput(520, "map title, description, or tag", 16);
+    Muted(win.AddText("Search Workshop, narrow the results if you want, and let the roulette decide.", 16));
+    win.NewRow();
+
+    win.StartCard();
+    UI::Text@ searchLabel = win.AddText("WORKSHOP SEARCH", 16);
+    Highlight(searchLabel);
+    win.NewRow();
+    @termBox = win.AddTextInput(0, "Title, description, or tags  /  leave blank for every map", 18);
     termBox.clearOnSubmit = false;
+    termBox.clearButton = true;
+    @findButton = win.AddButton("FIND MAPS  >");
+    BrightButton(findButton);
+    findButton.SetSize(178, 43);
+    @advancedButton = win.AddButton("MORE FILTERS  >");
+    DarkButton(advancedButton);
+    advancedButton.SetSize(197, 43);
     win.NewRow();
-    win.AddText("Include tags (all)", 17);
-    win.AddSpace(0);
-    @tagsBox = win.AddTextInput(520, "optional: beginner, flow", 16);
-    tagsBox.clearOnSubmit = false;
+    @filterSummary = win.AddText("No extra filters applied. Search includes every Workshop map.", 14);
+    Muted(filterSummary);
+    win.EndCard();
+
+    win.StartCard();
+    Muted(win.AddText("HOW SHOULD THE SPIN PLAY?", 15));
     win.NewRow();
-    win.AddText("Exclude tags", 17);
-    win.AddSpace(0);
-    @excludeBox = win.AddTextInput(520, "optional: troll", 16);
-    excludeBox.clearOnSubmit = false;
+    @autoPlayBox = win.AddCheckBox("Auto-open selected map", 16);
+    autoPlayBox.checked = true;
+    win.AddSpace(38);
+    win.AddText("Music", 16);
+    @musicVolumeBox = win.AddDropdown(180);
+    musicVolumeBox.AddOption("off");
+    musicVolumeBox.AddOption("quiet (default)");
+    musicVolumeBox.AddOption("normal");
+    musicVolumeBox.selected = 1;
+    win.AddSpace(34);
+    @soundsBox = win.AddCheckBox("Click + reveal sounds", 16);
+    soundsBox.checked = true;
+    win.EndCard();
+
+    win.StartCard();
+    Muted(win.AddText("YOUR RESULTS", 15));
+    win.NewRow();
+    @statusText = win.AddText("READY  /  Start with FIND MAPS.", 21);
+    Highlight(statusText);
+    win.NewRow();
+    @helpText = win.AddText("Every qualifying map gets one equal chance. No results are preselected.", 15);
+    Muted(helpText);
+    win.NewRow();
+    @spinButton = win.AddButton("SPIN THE ROULETTE  >");
+    BrightButton(spinButton);
+    spinButton.SetSize(256, 44);
+    spinButton.visible = false;
+    @precheckButton = win.AddButton("CHECK AN UNKNOWN MAP  >");
+    DarkButton(precheckButton);
+    precheckButton.visible = false;
+    @cancelButton = win.AddButton("CANCEL SEARCH");
+    DarkButton(cancelButton);
+    cancelButton.visible = false;
+    @resetButton = win.AddButton("RESET FILTERS");
+    DarkButton(resetButton);
+    win.EndCard();
+
+    // Detailed constraints stay available, but don't overwhelm the main page.
+    // Tag inputs share a row; shrink them on narrower displays.
+    float tagInputWidth = screenWidth * 0.26f;
+    if (tagInputWidth > 445.0f) tagInputWidth = 445.0f;
+    if (tagInputWidth < 235.0f) tagInputWidth = 235.0f;
+    advancedView = win.StartView();
+    win.SetScrolling(advancedView, true);
+    Muted(win.AddText("01  /  REFINE YOUR POOL", 15));
+    win.NewRow();
+    win.AddText("More filters", 30);
+    win.NewRow();
+    Muted(win.AddText("These filters apply when you run FIND MAPS. Empty fields mean no restriction.", 16));
+    win.NewRow();
+
+    win.StartCard();
+    Highlight(win.AddText("DISCOVERY", 16));
     win.NewRow();
     win.AddText("Sort", 16);
-    @sortBox = win.AddDropdown(145);
+    @sortBox = win.AddDropdown(185);
     sortBox.AddOption("top");
     sortBox.AddOption("trending 7d");
     sortBox.AddOption("newest");
@@ -736,113 +873,131 @@ void Main()
     sortBox.AddOption("liked");
     sortBox.AddOption("relevance");
     sortBox.selected = 0;
-    win.AddSpace(17);
-    win.AddText("Min rating", 16);
-    @ratingBox = win.AddDropdown(112);
+    win.AddSpace(35);
+    win.AddText("Minimum rating", 16);
+    @ratingBox = win.AddDropdown(158);
     ratingBox.AddOption("any");
     ratingBox.AddOption("3 stars");
     ratingBox.AddOption("4 stars");
     ratingBox.AddOption("5 stars");
-    win.AddSpace(17);
-    win.AddText("Min plays", 16);
-    @playsBox = win.AddDropdown(112);
+    win.AddSpace(35);
+    win.AddText("Minimum plays", 16);
+    @playsBox = win.AddDropdown(158);
     playsBox.AddOption("any");
     playsBox.AddOption("10+");
     playsBox.AddOption("100+");
     playsBox.AddOption("1000+");
+    win.EndCard();
+
+    win.StartCard();
+    Highlight(win.AddText("WORKSHOP TAGS", 16));
     win.NewRow();
-    win.AddText("Author time (known maps)", 16);
-    win.AddSpace(12);
-    win.AddText("Min", 15);
-    @minAuthorBox = win.AddTextInput(120, "none", 16);
-    minAuthorBox.clearOnSubmit = false;
-    win.AddSpace(15);
-    win.AddText("Max", 15);
-    @maxAuthorBox = win.AddTextInput(120, "e.g. 1:30", 16);
-    maxAuthorBox.clearOnSubmit = false;
+    win.AddText("Include all", 16);
+    @tagsBox = win.AddTextInput(tagInputWidth, "e.g. beginner, flow", 17);
+    tagsBox.clearOnSubmit = false;
+    tagsBox.clearButton = true;
+    win.AddSpace(25);
+    win.AddText("Exclude", 16);
+    @excludeBox = win.AddTextInput(tagInputWidth, "e.g. troll", 17);
+    excludeBox.clearOnSubmit = false;
+    excludeBox.clearButton = true;
     win.NewRow();
-    Muted(win.AddText("Unknown maps are excluded. Check one first without completing it; stale times are also excluded.", 14));
+    Muted(win.AddText("Separate tags with commas. Leave either side empty if you don't need it.", 14));
+    win.EndCard();
+
+    win.StartCard();
+    Highlight(win.AddText("ADDITIONAL RESTRICTIONS", 16));
     win.NewRow();
     @unfinishedBox = win.AddCheckBox("Only maps I haven't finished", 16);
     win.NewRow();
-    @autoPlayBox = win.AddCheckBox("Open the chosen map automatically", 16);
-    autoPlayBox.checked = true;
+    win.AddText("Author time (checked maps only)", 15);
+    win.AddSpace(25);
+    win.AddText("From", 15);
+    @minAuthorBox = win.AddTextInput(130, "none", 16);
+    minAuthorBox.clearOnSubmit = false;
+    minAuthorBox.clearButton = true;
+    win.AddSpace(22);
+    win.AddText("To", 15);
+    @maxAuthorBox = win.AddTextInput(130, "e.g. 1:30", 16);
+    maxAuthorBox.clearOnSubmit = false;
+    maxAuthorBox.clearButton = true;
     win.NewRow();
-    win.AddText("Spin music", 16);
-    @musicVolumeBox = win.AddDropdown(192);
-    musicVolumeBox.AddOption("off");
-    musicVolumeBox.AddOption("quiet (default)");
-    musicVolumeBox.AddOption("normal");
-    musicVolumeBox.selected = 1;
-    win.AddSpace(18);
-    @soundsBox = win.AddCheckBox("Roulette clicks + reveal", 16);
-    soundsBox.checked = true;
+    Muted(win.AddText("Experimental: unchecked maps are excluded. Leave both blank for normal roulette.", 14));
+    win.EndCard();
     win.NewRow();
-    @findButton = win.AddButton("FIND MAPS");
-    BrightButton(findButton);
-    @cancelButton = win.AddButton("cancel search");
-    DarkButton(cancelButton);
-    cancelButton.visible = false;
-    @precheckButton = win.AddButton("CHECK RANDOM UNKNOWN MAP  >");
-    DarkButton(precheckButton);
-    precheckButton.visible = false;
-    @spinButton = win.AddButton("SPIN ROULETTE  >");
-    BrightButton(spinButton);
-    spinButton.visible = false;
-    win.NewRow();
-    @statusText = win.AddText("Choose filters and click FIND MAPS.", 19);
-    Highlight(statusText);
-    win.NewRow();
-    @helpText = win.AddText("Uses real Hub maps and previews; images may take time to load.", 15);
-    Muted(helpText);
+    @doneAdvancedButton = win.AddButton("<  BACK TO SEARCH");
+    BrightButton(doneAdvancedButton);
+    doneAdvancedButton.SetSize(236, 43);
+    win.AddSpace(14);
+    Muted(win.AddText("Changes require a fresh search before spinning.", 14));
 
-    // During the spin: five larger previews, distributed evenly in a centred
-    // horizontal strip. The center photo is visibly larger than the others.
+    // STEP 2. Dark presentation stage. Use the photos as the visual motion:
+    // the changing central image is deliberately larger, while one small status
+    // line communicates progress. Avoid repeating the same information 3 times.
     reelView = win.StartView();
     win.AddSpace(0);
-    @reelStatus = win.AddText("SPINNING ...", 26);
+    Muted(win.AddText("02  /  THE DRAW", 14));
+    win.AddSpace(0);
+    win.NewRow();
+    win.AddSpace(0);
+    @reelStatus = win.AddText("ROLLING   0%", 38);
     Highlight(reelStatus);
     win.AddSpace(0);
     win.NewRow();
     win.AddSpace(0);
-    UI::Text@ pointer = win.AddText("▼   CURRENT MAP   ▼", 23);
-    Highlight(pointer);
+    @reelPoolText = win.AddText("MAPS IN THE DRAW", 15);
+    Muted(reelPoolText);
+    win.AddSpace(0);
+    win.NewRow();
+
+    win.StartCard();
+    win.AddSpace(0);
+    UI::Text@ focusLabel = win.AddText("▼", 23);
+    Highlight(focusLabel);
     win.AddSpace(0);
     win.NewRow();
     win.AddSpace(0);
     for (int i = 0; i < SLOTS; i++)
     {
-        float width = (i == SLOTS / 2 ? 308.0f : 206.0f) * reelScale;
+        float width = (i == SLOTS / 2 ? 330.0f : 180.0f) * reelScale;
         float height = width * 304.0f / 504.0f;
         UI::Image@ picture = win.AddImage(Plugins::Folder() + "placeholder.png", width, height);
         thumbs.insertLast(picture);
-        if (i < SLOTS - 1) win.AddSpace(10.0f * reelScale);
+        if (i < SLOTS - 1) win.AddSpace(13.0f * reelScale);
     }
     win.AddSpace(0);
     win.NewRow();
     win.AddSpace(0);
-    @reelTitle = win.AddText("", 29);
-    Highlight(reelTitle);
+    @reelTitle = win.AddText("", 31);
     win.AddSpace(0);
+    win.NewRow();
+    win.AddSpace(0);
+    @reelProgressText = win.AddText("SHUFFLING", 14);
+    Muted(reelProgressText);
+    win.AddSpace(0);
+    win.EndCard();
     win.NewRow();
     win.AddSpace(0);
     @stopButton = win.AddButton("STOP SPIN");
     DarkButton(stopButton);
-    @reelBackButton = win.AddButton("< FILTERS");
+    stopButton.SetSize(171, 45);
+    @reelBackButton = win.AddButton("<  FILTERS");
     DarkButton(reelBackButton);
+    reelBackButton.SetSize(154, 45);
     win.AddSpace(0);
 
-    // After stopping: replace the roulette strip with a large centred hero
-    // shot of the *actual* chosen map. Make the outcome obvious on video.
+    // STEP 3. Minimal poster-style winner reveal. Let the authentic full-size
+    // map image, selected title, and main play button do the work; no enormous
+    // monochrome card and no redundant labels around the screenshot.
     winnerView = win.StartView();
+    win.SetScrolling(winnerView, true); // Short displays can still access all actions.
     win.AddSpace(0);
-    UI::Text@ winnerHeading = win.AddText("MAP SELECTED", 34);
-    Highlight(winnerHeading);
+    Muted(win.AddText("03  /  THE RESULT", 14));
     win.AddSpace(0);
     win.NewRow();
     win.AddSpace(0);
-    UI::Text@ winnerArrow = win.AddText("▼  YOUR NEXT MAP  ▼", 18);
-    Highlight(winnerArrow);
+    UI::Text@ winnerHeadline = win.AddText("MAP SELECTED", 32);
+    Highlight(winnerHeadline);
     win.AddSpace(0);
     win.NewRow();
     win.AddSpace(0);
@@ -850,33 +1005,36 @@ void Main()
     win.AddSpace(0);
     win.NewRow();
     win.AddSpace(0);
-    @pickedTitle = win.AddText("", 40);
-    Highlight(pickedTitle);
+    @pickedTitle = win.AddText("", 41);
     win.AddSpace(0);
     win.NewRow();
     win.AddSpace(0);
-    @pickedInfo = win.AddText("", 17);
+    @pickedInfo = win.AddText("", 15);
     Muted(pickedInfo);
     win.AddSpace(0);
     win.NewRow();
     win.AddSpace(0);
     @playButton = win.AddButton("PLAY THIS MAP  >");
     BrightButton(playButton);
+    playButton.SetSize(255, 52);
     @spinAgainButton = win.AddButton("SPIN AGAIN");
     DarkButton(spinAgainButton);
-    @backButton = win.AddButton("< FILTERS");
+    spinAgainButton.SetSize(165, 52);
+    @backButton = win.AddButton("<  FILTERS");
     DarkButton(backButton);
+    backButton.SetSize(137, 52);
     win.AddSpace(0);
     win.NewRow();
     win.AddSpace(0);
-    @autoPlayTimer = win.AddText("", 15);
+    @autoPlayTimer = win.AddText("", 14);
     Muted(autoPlayTimer);
     win.AddSpace(0);
+
     playButton.visible = false;
     spinAgainButton.visible = false;
     win.ShowView(setupView);
     win.visible = false;
-    Log::Info("Map Roulette ready. Open from the main menu, footer, or F7.");
+    Log::Info("Map Roulette v0.1.8 visual redesign ready. Open from main menu, footer, or F7.");
 }
 void Update(float dt)
 {
@@ -898,8 +1056,29 @@ void Update(float dt)
         return;
     }
     if (findButton.Clicked() || termBox.Submitted() || tagsBox.Submitted() || excludeBox.Submitted() ||
-        minAuthorBox.Submitted() || maxAuthorBox.Submitted()) StartSearch();
+        minAuthorBox.Submitted() || maxAuthorBox.Submitted())
+    {
+        StartSearch();
+        win.ShowView(setupView);
+    }
+    if (advancedButton.Clicked())
+    {
+        advancedSnapshot = FilterSignature();
+        win.ShowView(advancedView);
+    }
+    if (doneAdvancedButton.Clicked())
+    {
+        if (FilterSignature() != advancedSnapshot)
+        {
+            CancelSearch();
+            statusText.text = "FILTERS CHANGED  /  Run FIND MAPS again.";
+            helpText.text = "Your previous results were cleared so the next draw uses the new filters.";
+        }
+        UpdateFilterSummary();
+        win.ShowView(setupView);
+    }
     if (cancelButton.Clicked()) CancelSearch();
+    if (resetButton.Clicked()) ResetSearchFilters();
     SearchUpdate();
     if (precheckButton.Clicked()) StartPrecheck();
     if (spinButton.Clicked() || spinAgainButton.Clicked()) StartSpin();
@@ -916,7 +1095,8 @@ void Update(float dt)
         StopSpinAudio();
         winnerReady = false;
         reelStatus.text = "SPIN STOPPED";
-        reelTitle.text = "< filters to try again";
+        reelProgressText.text = "SPIN CANCELLED";
+        reelTitle.text = "";
         playButton.visible = false;
         stopButton.visible = false;
     }
@@ -932,10 +1112,10 @@ void Update(float dt)
         {
             int secondsLeft = int(Math::ceil(6.0 - (Host::Time() - winnerTime)));
             if (secondsLeft < 0) secondsLeft = 0;
-            autoPlayTimer.text = "Opening automatically in " + secondsLeft + "s";
+            autoPlayTimer.text = "Opening in " + secondsLeft + "s  /  Close to cancel";
             if (Host::Time() - winnerTime > 6.0) PlayWinner();
         }
-        else autoPlayTimer.text = "Manual play selected. The map will not start until you click Play.";
+        else autoPlayTimer.text = "";
     }
     if (loading)
     {
