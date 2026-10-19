@@ -19,7 +19,7 @@
 - [x] **Workshop text-field fix verified in-game:** Search, include tags, and exclude tags now use the live typed field value when FIND MAPS is clicked; tester confirms the fix and remaining features work normally. See [issue #6](https://github.com/YT-skyfall/ballest-map-roulette/issues/6).
 - [ ] **Run complete manual regression**, using the matrix below.
 - [ ] **Leave the plugin enabled during roughly one hour of ordinary gameplay**, check that it doesn't stop for going over its 50ms callback budget and doesn't interfere with Ballest.
-- [ ] Capture at least one **actual v0.1.8 screenshot** and add it to the README. Avoid using a prior mockup or a v0.1.7 screenshot as the final version.
+- [x] Added three actual v0.1.8 in-game screenshots to the public-facing README: `screenshots/search.jpg`, `screenshots/roulette.jpg`, and `screenshots/winner.jpg`. They were cropped/resized for readability; the original images remain in the conversation.
 - [ ] Creator verifies they own or may redistribute **both PNG files and all included audio** under the selected MIT license.
 - [ ] Creator approves public repository visibility and GitHub version/tag **separately**.
 - [ ] Only after approved public tagging, request addition to Plugin Manager's registry.
