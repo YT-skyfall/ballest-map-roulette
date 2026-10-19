@@ -1,8 +1,8 @@
 # Changelog
 
-All release-candidate changes are documented here. The project is not in Plugin Manager's public registry yet.
+User-facing changes for Map Roulette are documented below.
 
-## 0.1.8 — Private release candidate (October 2026)
+## 0.1.8 — Initial release (October 2026)
 
 - Redesigned the search screen with a prominent Workshop search field and **MORE FILTERS**.
 - Moved advanced filter controls to a dedicated screen.
@@ -13,7 +13,7 @@ All release-candidate changes are documented here. The project is not in Plugin 
 - Kept search-based map selection, auto-opening, music, audio effects, and known author-time behavior.
 - Retained the author-time limitation for maps that have not previously been checked.
 
-**Release status:** awaiting final regression pass and a current v0.1.8 in-game screenshot. No public tag or registry entry has been created.
+This version includes the search-and-tag input fix verified in-game, the finalized interface, and the documented author-time limitation.
 
 ## 0.1.5 — Last previously confirmed stable baseline
 
