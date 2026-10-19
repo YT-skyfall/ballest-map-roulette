@@ -26,6 +26,22 @@ Map Roulette searches community-created tracks in Ballest's **Hub (Steam Worksho
 - **Music and effects** — Choose a music volume and toggle spinning clicks and the winner sound.
 - **Quick access** — Open Map Roulette from the game's menu, footer, or with **F7**.
 
+## Screenshots
+
+These screenshots show the three stages of Map Roulette in Ballest of Them All.
+
+**Choose your maps**
+
+![Map Roulette search screen with Workshop search, playback settings, and map results](screenshots/search.jpg)
+
+**Watch the roulette**
+
+![Map Roulette spinning through five Steam Workshop map previews](screenshots/roulette.jpg)
+
+**Play your selection**
+
+![Map Roulette winner screen showing the selected map preview and play options](screenshots/winner.jpg)
+
 ## Requirements
 
 - **Ballest of Them All** on **Windows via Steam**
