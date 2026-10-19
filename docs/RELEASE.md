@@ -18,7 +18,7 @@
 - [ ] **Confirm final v0.1.8 on the intended installed Plugin Manager host:** no AngelScript errors or warnings in `plugins → console` or `host.log`.
 - [x] **Workshop text-field fix verified in-game:** Search, include tags, and exclude tags now use the live typed field value when FIND MAPS is clicked; tester confirms the fix and remaining features work normally. See [issue #6](https://github.com/YT-skyfall/ballest-map-roulette/issues/6).
 - [ ] **Complete final regression**, using the matrix below. Creator reports normal use and confirms search/tags/spins function, but some edge cases haven't been individually signed off.
-- [ ] **Extended stability:** Creator reports the plugin runs normally, but an approximately one-hour error-free session has not been explicitly confirmed. Keep this test open until confirmed.
+- [x] **Extended stability:** Creator confirmed successful extended in-game operation (approximately an hour) with Map Roulette enabled and reported that the plugin is working correctly. This is a user-reported test; no independent access to the game's runtime logs.
 - [x] Added three actual v0.1.8 in-game screenshots to the public-facing README: `screenshots/search.jpg`, `screenshots/roulette.jpg`, and `screenshots/winner.jpg`. They were cropped/resized for readability; the original images remain in the conversation.
 - [x] Public-facing CHANGELOG and README cleaned up, and the current branch removes the BETA UI badge.
 - [x] Creator confirmed publishing rights for both PNGs. Original v0.1.5 build notes document that all 18 WAVs were newly synthesized/generated for Map Roulette, without outside recordings or samples; all 18 candidate WAVs match the original byte-for-byte. See [AUDIO-PROVENANCE.md](AUDIO-PROVENANCE.md).
