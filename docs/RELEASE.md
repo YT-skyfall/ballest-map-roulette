@@ -4,7 +4,7 @@
 
 ## 1. Files and packaging audit
 
-- [x] The v0.1.8 `main.as` matches the creator's v0.1.8 visual-test archive byte for byte (Git blob SHA: `b5b1f36658467714880cf33534058f8f0f46625f`).
+- [x] The initial v0.1.8 visual-test source was preserved at Git blob SHA `b5b1f36658467714880cf33534058f8f0f46625f`. The final v0.1.8 release-candidate code includes the in-game-tested Workshop search/tag input fix from branch `fix/workshop-search-and-tags-rc2` (Git blob SHA `fff3cf3b8e3a99675342a7fb9e31ea06ee59335c`).
 - [x] A regular Plugin Manager `info.toml` identifies the `main.as` entry point, the icon, the preview image, all sound WAVs, and minimum host version.
 - [x] Both PNGs and all **18** WAV assets in the private repository match the v0.1.8 test ZIP Git blob hashes.
 - [x] No built `.dll`, `.exe`, `.pak`, or compiled container is required or distributed as plugin source.
@@ -16,6 +16,7 @@
 ## 2. Before calling it release-ready
 
 - [ ] **Confirm final v0.1.8 on the intended installed Plugin Manager host:** no AngelScript errors or warnings in `plugins → console` or `host.log`.
+- [x] **Workshop text-field fix verified in-game:** Search, include tags, and exclude tags now use the live typed field value when FIND MAPS is clicked; tester confirms the fix and remaining features work normally. See [issue #6](https://github.com/YT-skyfall/ballest-map-roulette/issues/6).
 - [ ] **Run complete manual regression**, using the matrix below.
 - [ ] **Leave the plugin enabled during roughly one hour of ordinary gameplay**, check that it doesn't stop for going over its 50ms callback budget and doesn't interfere with Ballest.
 - [ ] Capture at least one **actual v0.1.8 screenshot** and add it to the README. Avoid using a prior mockup or a v0.1.7 screenshot as the final version.
