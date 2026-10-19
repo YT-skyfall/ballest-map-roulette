@@ -785,7 +785,7 @@ void Main()
     win.SetScrolling(setupView, true);
     Muted(win.AddText("01  /  BUILD YOUR POOL", 15));
     win.NewRow();
-    win.AddText("Find something worth playing.", 29);
+    win.AddText("Can't decide what to play?", 29);
     win.NewRow();
     Muted(win.AddText("Search Workshop, narrow the results if you want, and let the roulette decide.", 16));
     win.NewRow();
