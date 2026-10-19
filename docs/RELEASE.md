@@ -4,7 +4,7 @@
 
 ## 1. Files and packaging audit
 
-- [x] The initial v0.1.8 visual-test source was preserved at Git blob SHA `b5b1f36658467714880cf33534058f8f0f46625f`. The final v0.1.8 release-candidate code includes the in-game-tested Workshop search/tag input fix from branch `fix/workshop-search-and-tags-rc2` (Git blob SHA `fff3cf3b8e3a99675342a7fb9e31ea06ee59335c`).
+- [x] The original v0.1.8 visual test is preserved (Git blob `b5b1f36658467714880cf33534058f8f0f46625f`). The live-input fix was user-tested (blob `fff3cf3b8e3a99675342a7fb9e31ea06ee59335c`). Final source in `main` is Git blob `f97783ac40cb3900fc353523e7f18564f5dd8a8e`; since that test it only changes the main heading to `Can't decide what to play?` and removes the `BETA` label. Those last two text changes have not been separately tested in-game.
 - [x] A regular Plugin Manager `info.toml` identifies the `main.as` entry point, the icon, the preview image, all sound WAVs, and minimum host version.
 - [x] Both PNGs and all **18** WAV assets in the private repository match the v0.1.8 test ZIP Git blob hashes.
 - [x] No built `.dll`, `.exe`, `.pak`, or compiled container is required or distributed as plugin source.
@@ -20,6 +20,7 @@
 - [ ] **Run complete manual regression**, using the matrix below.
 - [ ] **Leave the plugin enabled during roughly one hour of ordinary gameplay**, check that it doesn't stop for going over its 50ms callback budget and doesn't interfere with Ballest.
 - [x] Added three actual v0.1.8 in-game screenshots to the public-facing README: `screenshots/search.jpg`, `screenshots/roulette.jpg`, and `screenshots/winner.jpg`. They were cropped/resized for readability; the original images remain in the conversation.
+- [x] Public-facing CHANGELOG and README cleaned up, and the current branch removes the BETA UI badge.
 - [ ] Creator verifies they own or may redistribute **both PNG files and all included audio** under the selected MIT license.
 - [ ] Creator approves public repository visibility and GitHub version/tag **separately**.
 - [ ] Only after approved public tagging, request addition to Plugin Manager's registry.
