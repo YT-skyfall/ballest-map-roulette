@@ -10,18 +10,18 @@
 - [x] No built `.dll`, `.exe`, `.pak`, or compiled container is required or distributed as plugin source.
 - [x] No `Console::` use or third-party network API key.
 - [x] README explains what the plugin does, how users will install/operate/update/remove it, and known limitations.
-- [x] MIT LICENSE (creator must approve authoring rights, see below) and CHANGELOG included.
+- [x] MIT LICENSE and CHANGELOG included; original WAV synthesis provenance and creator's PNG ownership confirmation documented in [AUDIO-PROVENANCE.md](AUDIO-PROVENANCE.md).
 - [x] v0.1.5 stable code kept on a separate private archive branch.
 
 ## 2. Before calling it release-ready
 
 - [ ] **Confirm final v0.1.8 on the intended installed Plugin Manager host:** no AngelScript errors or warnings in `plugins → console` or `host.log`.
 - [x] **Workshop text-field fix verified in-game:** Search, include tags, and exclude tags now use the live typed field value when FIND MAPS is clicked; tester confirms the fix and remaining features work normally. See [issue #6](https://github.com/YT-skyfall/ballest-map-roulette/issues/6).
-- [ ] **Run complete manual regression**, using the matrix below.
-- [ ] **Leave the plugin enabled during roughly one hour of ordinary gameplay**, check that it doesn't stop for going over its 50ms callback budget and doesn't interfere with Ballest.
+- [ ] **Complete final regression**, using the matrix below. Creator reports normal use and confirms search/tags/spins function, but some edge cases haven't been individually signed off.
+- [ ] **Extended stability:** Creator reports the plugin runs normally, but an approximately one-hour error-free session has not been explicitly confirmed. Keep this test open until confirmed.
 - [x] Added three actual v0.1.8 in-game screenshots to the public-facing README: `screenshots/search.jpg`, `screenshots/roulette.jpg`, and `screenshots/winner.jpg`. They were cropped/resized for readability; the original images remain in the conversation.
 - [x] Public-facing CHANGELOG and README cleaned up, and the current branch removes the BETA UI badge.
-- [ ] Creator verifies they own or may redistribute **both PNG files and all included audio** under the selected MIT license.
+- [x] Creator confirmed publishing rights for both PNGs. Original v0.1.5 build notes document that all 18 WAVs were newly synthesized/generated for Map Roulette, without outside recordings or samples; all 18 candidate WAVs match the original byte-for-byte. See [AUDIO-PROVENANCE.md](AUDIO-PROVENANCE.md).
 - [ ] Creator approves public repository visibility and GitHub version/tag **separately**.
 - [ ] Only after approved public tagging, request addition to Plugin Manager's registry.
 
