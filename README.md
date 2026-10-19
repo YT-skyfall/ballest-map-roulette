@@ -12,9 +12,6 @@ A free, community-made plugin for **Ballest of Them All** that picks a random St
 
 </div>
 
-> [!NOTE]
-> **Map Roulette isn't in Plugin Manager's in-game browser yet.** Once it's listed, you can install it with one click. In the meantime, you can install it manually if you have access to the plugin files. Instructions for both methods are below.
-
 ## What does it do?
 
 Map Roulette searches community-created tracks in Ballest's **Hub (Steam Workshop)**, filters the results, and randomly selects what you'll play next. Watch the map previews roll by, see which track wins, then play it or spin again.
@@ -39,10 +36,6 @@ Map Roulette is a Plugin Manager plugin. **You do not need UE4SS**, and it does 
 
 ## Installation
 
-### Recommended: Install through Plugin Manager
-
-*Available once Map Roulette is added to the in-game plugin browser.*
-
 1. [Install Ballest Plugin Manager](https://github.com/AnythingGoes-ballest/ballest-plugin-manager#install).
 2. Launch **Ballest of Them All**.
 3. Open **plugins** from the main menu.
@@ -51,34 +44,6 @@ Map Roulette is a Plugin Manager plugin. **You do not need UE4SS**, and it does 
 
 Plugin Manager handles downloading and installing the required files.
 
-### Manual installation
-
-*Use this method if Map Roulette is not listed in Plugin Manager and you have the plugin files.*
-
-1. Install **Ballest Plugin Manager** using the link above.
-2. In Ballest, open **plugins → open plugins folder** to find the correct installation directory.
-3. **Close Ballest** before copying files.
-4. Get the Map Roulette files from this repository using **Code → Download ZIP**, then extract the ZIP.
-5. Create a folder called `map-roulette` inside the `plugins` directory, if it doesn't exist.
-6. Copy `main.as`, `info.toml`, `icon.png`, `placeholder.png`, and the entire `sounds` folder into `map-roulette`.
-7. Start Ballest again. Map Roulette should appear in the menu, footer, or when you press **F7**.
-
-Your installation should look like this:
-
-```text
-plugins/
-└── map-roulette/
-    ├── info.toml
-    ├── main.as
-    ├── icon.png
-    ├── placeholder.png
-    └── sounds/
-        ├── music_00.wav ... music_15.wav
-        ├── tick.wav
-        └── reveal.wav
-```
-
-**Do not** copy the entire GitHub repository into the plugins folder or modify Plugin Manager's `version.dll`.
 
 ## How to use Map Roulette
 
@@ -125,16 +90,14 @@ The selected map does **not** have to be installed ahead of time; Steam handles 
 
 ## Updating and uninstalling
 
-**Installed through Plugin Manager?** Open **plugins** in Ballest, find Map Roulette, and select **update**, **turn off**, or **remove** as needed. New versions appear when they've been added to the Plugin Manager registry.
-
-**Installed manually?** Close Ballest, then replace the files inside `plugins/map-roulette/` to update, or delete **only that folder** to uninstall. Don't delete the entire `plugins` directory.
+Open **plugins** in Ballest, find **Map Roulette**, and select **update**, **turn off**, or **remove** as needed. Updates appear when a new version is available in Plugin Manager.
 
 ## Troubleshooting
 
 <details>
 <summary><strong>Map Roulette doesn't appear</strong></summary>
 
-Make sure Ballest Plugin Manager is installed and up to date. If you installed Map Roulette manually, verify the `plugins/map-roulette/` folder structure above and restart the game. You can check **plugins → console** for loading errors.
+Make sure Ballest Plugin Manager is installed and up to date, and check that Map Roulette is installed and enabled in the plugin browser. Restart Ballest if needed. You can check **plugins → console** for loading errors.
 
 </details>
 
