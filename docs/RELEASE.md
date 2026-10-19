@@ -22,7 +22,7 @@
 - [x] Added three actual v0.1.8 in-game screenshots to the public-facing README: `screenshots/search.jpg`, `screenshots/roulette.jpg`, and `screenshots/winner.jpg`. They were cropped/resized for readability; the original images remain in the conversation.
 - [x] Public-facing CHANGELOG and README cleaned up, and the current branch removes the BETA UI badge.
 - [x] Creator confirmed publishing rights for both PNGs. Original v0.1.5 build notes document that all 18 WAVs were newly synthesized/generated for Map Roulette, without outside recordings or samples; all 18 candidate WAVs match the original byte-for-byte. See [AUDIO-PROVENANCE.md](AUDIO-PROVENANCE.md).
-- [ ] Creator approves public repository visibility and GitHub version/tag **separately**.
+- [x] Creator explicitly approved making the repository public and creating the `v0.1.8` Git tag (October 19, 2026). **Approval recorded; actions NOT yet performed** because the available GitHub connector lacks repository-visibility and tag-creation actions.
 - [ ] Only after approved public tagging, request addition to Plugin Manager's registry.
 
 ### Final regression matrix
@@ -66,5 +66,13 @@ Suggested issue text (send only **after** approval):
 > Author: Sky.
 >
 > Map Roulette is an optional Steam Workshop map picker for Ballest. It has filters, a randomized thumbnail reel, manual/automatic map opening, and adjustable spin audio. It requires host 0.26.0+. The author-time prefilter is experimental for previously checked maps and documented. The repository includes the source, icon, audio assets, README, and license.
+
+## Publication execution status
+
+- **Creator authorization:** Public visibility and creation of `v0.1.8` are approved.
+- **Repository visibility:** Still PRIVATE as of the last connected GitHub check. Change visibility in GitHub Settings → General → Danger Zone → Change repository visibility.
+- **Git tag:** NOT created or pushed as of this handoff. After visibility changes, make a *new immutable tag* `v0.1.8` from the up-to-date `main` commit, then verify it points to the approved source.
+- **Registry submission:** NOT authorized by the most recent approval (which covered repository visibility and tag only). Wait for a separate request to submit to AnythingGoes.
+- **Reminder:** Going public exposes every branch and repository issue, including research and historical notes. Review the repository before switching visibility.
 
 **Important:** No contact with the maintainer is required until this final request. Do not open the issue until the creator asks to submit.
