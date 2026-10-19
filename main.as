@@ -359,26 +359,26 @@ void StartSearch()
     winnerReady = false;
     failedLoading = false;
     spinButton.visible = false;
-    queryText = Trim(termBox.text);
-    includeTags = Tags(tagsBox.text);
-    excludeTags = Tags(excludeBox.text);
+    queryText = Trim(termBox.typed);
+    includeTags = Tags(tagsBox.typed);
+    excludeTags = Tags(excludeBox.typed);
     querySort = Sorting(sortBox.selected);
     if (querySort == "relevance" && queryText == "") querySort = "top";
     minStars = ratingBox.selected == 1 ? 3 : ratingBox.selected == 2 ? 4 : ratingBox.selected == 3 ? 5 : 0;
     minPlays = playsBox.selected == 1 ? 10 : playsBox.selected == 2 ? 100 : playsBox.selected == 3 ? 1000 : 0;
     unfinishedOnly = unfinishedBox.checked;
-    if (!ParseDuration(minAuthorBox.text, minAuthorTime) ||
-        !ParseDuration(maxAuthorBox.text, maxAuthorTime))
+    if (!ParseDuration(minAuthorBox.typed, minAuthorTime) ||
+        !ParseDuration(maxAuthorBox.typed, maxAuthorTime))
     {
         statusText.text = "Invalid author time. Use 45, 1:30, or 2:05.500.";
         helpText.text = "Leave either time blank for no minimum or maximum.";
         cancelButton.visible = false;
         return;
     }
-    filterAuthorTime = Trim(minAuthorBox.text) != "" || Trim(maxAuthorBox.text) != "";
+    filterAuthorTime = Trim(minAuthorBox.typed) != "" || Trim(maxAuthorBox.typed) != "";
     UpdateFilterSummary();
-    if ((Trim(minAuthorBox.text) != "" && minAuthorTime <= 0) ||
-        (Trim(maxAuthorBox.text) != "" && maxAuthorTime <= 0))
+    if ((Trim(minAuthorBox.typed) != "" && minAuthorTime <= 0) ||
+        (Trim(maxAuthorBox.typed) != "" && maxAuthorTime <= 0))
     {
         statusText.text = "Time limits must be greater than zero. Leave blank for none.";
         cancelButton.visible = false;
@@ -425,7 +425,9 @@ void ResetSearchFilters()
     unfinishedBox.checked = false;
     filterAuthorTime = false;
     precheckMessage = "";
-    UpdateFilterSummary();
+    // Input values are applied by the host on its next UI tick; the old live
+    // text can still be present now, so show the reset state directly.
+    filterSummary.text = "NO EXTRA FILTERS   /   All public Workshop maps are included";
     statusText.text = "FILTERS RESET  /  Click FIND MAPS to search again.";
     helpText.text = "Search Workshop maps, then spin for a random pick.";
 }
@@ -433,16 +435,16 @@ void ResetSearchFilters()
 string FilterSignature()
 {
     // Snapshot only the filters that affect which maps qualify.
-    return tagsBox.text + "|" + excludeBox.text + "|" +
+    return tagsBox.typed + "|" + excludeBox.typed + "|" +
         formatInt(sortBox.selected) + "|" + formatInt(ratingBox.selected) + "|" +
         formatInt(playsBox.selected) + "|" + formatInt(unfinishedBox.checked ? 1 : 0) + "|" +
-        minAuthorBox.text + "|" + maxAuthorBox.text;
+        minAuthorBox.typed + "|" + maxAuthorBox.typed;
 }
 
 void UpdateFilterSummary()
 {
-    bool tagsUsed = Trim(tagsBox.text) != "" || Trim(excludeBox.text) != "";
-    bool timeUsed = Trim(minAuthorBox.text) != "" || Trim(maxAuthorBox.text) != "";
+    bool tagsUsed = Trim(tagsBox.typed) != "" || Trim(excludeBox.typed) != "";
+    bool timeUsed = Trim(minAuthorBox.typed) != "" || Trim(maxAuthorBox.typed) != "";
     bool optionsUsed = tagsUsed || timeUsed || sortBox.selected != 0 ||
         ratingBox.selected != 0 || playsBox.selected != 0 || unfinishedBox.checked;
     filterSummary.text = optionsUsed
